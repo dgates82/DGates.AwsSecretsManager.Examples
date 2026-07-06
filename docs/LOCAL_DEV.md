@@ -42,7 +42,7 @@ docker compose down -v
 ## Re-seeding manually
 If LocalStack is already running and you need to re-seed:
 ```bash
-./docker/seed-secrets.sh
+docker/seed-secrets.sh
 ```
 > The seed script is idempotent — re-running it is safe.
 
