@@ -33,7 +33,7 @@ create_or_update_secret "dev/ConsoleExample/DbConfig" \
   '{"Server":"localhost","Database":"ExampleDb","Username":"app_user","Password":"s3cr3t!"}'
 
 # MvcExample — placeholder OpenWeatherMap key (replace with real key for live data)
-create_or_update_secret "dev/DGates.AwsSecretsManager.Examples/OpenWeatherMap" \
+create_or_update_secret "dev/MvcExample/OpenWeatherMap" \
   '{"Url":"https://api.openweathermap.org/data/2.5/weather","Key":"YOUR_KEY_HERE"}'
 
 echo "Done. Seeded secrets are available at $ENDPOINT (region $REGION)."
