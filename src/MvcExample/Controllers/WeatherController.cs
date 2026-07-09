@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -20,6 +21,11 @@ namespace MvcExample.Controllers
             try
             {
                 secret = await FetchSecretAsync();
+            }
+            catch (FileNotFoundException ex)
+            {
+                Trace.TraceError("LocalJsonFallbackPath file not found on page load: " + ex);
+                return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {
@@ -47,6 +53,11 @@ namespace MvcExample.Controllers
             try
             {
                 secret = await FetchSecretAsync();
+            }
+            catch (FileNotFoundException ex)
+            {
+                Trace.TraceError("LocalJsonFallbackPath file not found: " + ex);
+                return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {

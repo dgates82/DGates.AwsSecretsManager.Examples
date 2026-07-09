@@ -24,7 +24,20 @@ namespace MvcExample.Core
                 IsConfigured = false,
                 ConfigurationMessage =
                     "Couldn't reach the secrets backend. Make sure LocalStack is running (docker compose up), " +
-                    "or set LocalJsonFallbackPath in Web.config to use a local fixture file instead."
+                    "or set LocalJsonFallbackPath in Web.config to use a local fixture file instead. " +
+                    "See docs/LOCAL_DEV.md \"Running examples without Docker\" for details."
+            };
+        }
+
+        public static WeatherViewModel LocalFallbackFileNotFound()
+        {
+            return new WeatherViewModel
+            {
+                IsConfigured = false,
+                ConfigurationMessage =
+                    "LocalJsonFallbackPath is set in Web.config, but the fixture file wasn't found at that path. " +
+                    "Check the path is correct relative to Web.config (IIS serves from the project's physical root, " +
+                    "not bin\\). See docs/LOCAL_DEV.md \"Running examples without Docker\" for details."
             };
         }
 

@@ -81,13 +81,12 @@ via `dotnet run` or the built exe.
    }
 ```
 
-Unlike ConsoleExample, IIS/IIS Express serves a classic ASP.NET app from its project's physical
-root (where `Web.config` lives), not from a `bin\` output folder — so the relative path should
-resolve directly against the fixture file's source location, with no copy-to-output step needed.
-`MvcExample.csproj` still copies the file to `bin\` defensively (`Condition="Exists(...)"`, so it's
-a no-op until the file exists), in case that assumption is wrong. **This hasn't been verified
-against a real IIS Express run yet** — confirm on Windows which path actually resolves, and correct
-this section if the assumption above turns out to be wrong.
+Unlike ConsoleExample, `SecretsManagerAccessor` resolves this path against the site's physical
+root (`HostingEnvironment.ApplicationPhysicalPath`, i.e. where `Web.config` lives), not the
+process's current working directory — a plain relative path won't resolve correctly under IIS/IIS
+Express otherwise, since the worker process's working directory has nothing to do with the site's
+content root. No copy-to-output step is needed; the file only needs to exist at this path relative
+to the project directory. Verified working against a real IIS Express run.
 
 2. Point `Web.config` at it:
 ```xml

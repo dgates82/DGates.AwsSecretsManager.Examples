@@ -1,6 +1,8 @@
 using System;
 using System.Configuration;
+using System.IO;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using DGates.AwsSecretsManager;
 
 namespace MvcExample.Infrastructure
@@ -21,7 +23,7 @@ namespace MvcExample.Infrastructure
                 Region = ConfigurationManager.AppSettings["AWSRegion"],
                 AccessKey = ConfigurationManager.AppSettings["AWSAccessKey"],
                 SecretKey = ConfigurationManager.AppSettings["AWSSecretKey"],
-                LocalJsonFallbackPath = ConfigurationManager.AppSettings["LocalJsonFallbackPath"]
+                LocalJsonFallbackPath = ResolveLocalJsonFallbackPath(ConfigurationManager.AppSettings["LocalJsonFallbackPath"])
             };
 
             _instance = SecretsManagerServiceFactory.Create(settings);
@@ -36,6 +38,20 @@ namespace MvcExample.Infrastructure
         {
             return _instance ?? throw new InvalidOperationException(
                 "SecretsManagerAccessor not initialized. Call Initialize() from Application_Start.");
+        }
+
+        private static string ResolveLocalJsonFallbackPath(string configuredPath)
+        {
+            if (string.IsNullOrWhiteSpace(configuredPath) || Path.IsPathRooted(configuredPath))
+            {
+                return configuredPath;
+            }
+
+            // IIS/IIS Express's worker process working directory has nothing to do with the
+            // site's physical root, so a plain relative path (unlike a console app, whose
+            // working directory is its own bin\ output folder) won't resolve against the
+            // fixture file's actual location without this.
+            return Path.Combine(HostingEnvironment.ApplicationPhysicalPath, configuredPath);
         }
     }
 }

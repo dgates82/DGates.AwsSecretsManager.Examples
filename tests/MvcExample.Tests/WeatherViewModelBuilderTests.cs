@@ -16,6 +16,26 @@ namespace MvcExample.Tests
         }
 
         [Fact]
+        public void BackendUnavailable_SetsIsConfiguredFalseWithMessage()
+        {
+            var model = WeatherViewModelBuilder.BackendUnavailable();
+
+            Assert.False(model.IsConfigured);
+            Assert.Contains("LocalStack", model.ConfigurationMessage);
+            Assert.False(model.HasResult);
+        }
+
+        [Fact]
+        public void LocalFallbackFileNotFound_SetsIsConfiguredFalseWithMessage()
+        {
+            var model = WeatherViewModelBuilder.LocalFallbackFileNotFound();
+
+            Assert.False(model.IsConfigured);
+            Assert.Contains("LocalJsonFallbackPath", model.ConfigurationMessage);
+            Assert.False(model.HasResult);
+        }
+
+        [Fact]
         public void MissingCityName_SetsErrorMessage()
         {
             var model = WeatherViewModelBuilder.MissingCityName();
