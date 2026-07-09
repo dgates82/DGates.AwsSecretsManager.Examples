@@ -1,0 +1,26 @@
+@{
+    ViewBag.Title = "Weather";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-4">
+        <h1 class="display-6">Weather Demo</h1>
+        <p class="lead">
+            This page will show live weather data retrieved through
+            <code>DGates.AwsSecretsManager</code>, using an OpenWeatherMap API key stored in
+            AWS Secrets Manager.
+        </p>
+    </div>
+</div>
+
+<p class="text-muted">
+    This app demonstrates <a href="https://github.com/dgates82/DGates.AwsSecretsManager">DGates.AwsSecretsManager</a> —
+    a typed, cached AWS Secrets Manager wrapper for .NET Framework 4.8. It retrieves an OpenWeatherMap
+    API key from Secrets Manager via <code>SecretsManagerServiceFactory</code> and uses it below.
+</p>
+
+<p>
+    Stub page — wiring to <code>ISecretsManagerService</code> and the OpenWeatherMap API comes
+    next. See the <a href="@Url.Action("About", "Home")">About</a> page for background on this
+    example.
+</p>

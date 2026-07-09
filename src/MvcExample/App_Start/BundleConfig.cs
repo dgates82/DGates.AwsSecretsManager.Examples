@@ -14,7 +14,7 @@ namespace MvcExample
                 "~/Scripts/jquery.validate*"));
 
             var bootstrapBundle = new ScriptBundle("~/bundles/bootstrap").Include(
-                "~/Scripts/bootstrap.js");
+                "~/Scripts/bootstrap.bundle.js");
             bootstrapBundle.Transforms.Clear();
             bundles.Add(bootstrapBundle);
 
