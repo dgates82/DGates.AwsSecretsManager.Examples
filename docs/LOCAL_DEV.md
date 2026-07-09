@@ -35,28 +35,43 @@ dotnet run --project src/ConsoleExample/ConsoleExample.csproj
 Or open `DGates.AwsSecretsManager.Examples.sln` in Visual Studio and run
 `ConsoleExample`.
 
-## Running MvcExample without Docker
+## Running examples without Docker
 
-MvcExample targets classic ASP.NET MVC 5 (`System.Web.Mvc`), which needs IIS/IIS Express to
-host — so it only runs on Windows regardless of backend. That's usually fine, since Docker
-Desktop's Linux containers (which LocalStack requires) work normally on native Windows via the
-WSL2 backend.
+Both examples can run without LocalStack/Docker using the library's `LocalJsonFallbackPath`
+setting, which reads secrets from a local JSON file instead of calling AWS/LocalStack. This is
+useful if Docker isn't available in your environment — for example, a Windows VM nested inside
+another hypervisor without virtualization passthrough (Docker Desktop's Linux-container support
+needs that passthrough, which many nested-VM setups don't expose), or any machine without
+Docker installed at all.
 
-The gap shows up specifically if you're developing inside a **Windows VM nested inside another
-hypervisor** (rather than native Windows hardware) — Docker Desktop's Linux-container support
-needs virtualization extensions passed through to the guest, which many nested-VM setups don't
-expose. In that case, Docker isn't available at all on the Windows side, and LocalStack can't
-be reached over the network from the VM either.
+### ConsoleExample
 
-For this case, use the library's `LocalJsonFallbackPath` setting instead of pointing at
-LocalStack:
+1. Create a fixture JSON file, e.g. `fixtures/console-secrets.json`:
+```json
+   {
+     "dev/ConsoleExample/DbConfig": {
+       "Server": "localhost",
+       "Database": "ExampleDb",
+       "Username": "app_user",
+       "Password": "s3cr3t!"
+     }
+   }
+```
+2. Set `LocalJsonFallbackPath` in `SecretsManagerSettings` (or wherever ConsoleExample reads
+   its config from) to point at that file.
+3. Run as normal:
+```bash
+   dotnet run --project src/ConsoleExample/ConsoleExample.csproj
+```
+
+### MvcExample
 
 1. Create a fixture JSON file, e.g. `fixtures/mvc-secrets.json`:
 ```json
    {
      "dev/MvcExample/OpenWeatherMap": {
        "Url": "https://api.openweathermap.org/data/2.5/weather",
-       "Key": "placeholder-key-for-local-dev"
+       "Key": "YOUR_KEY_HERE"
      }
    }
 ```
@@ -66,14 +81,16 @@ LocalStack:
      <add key="LocalJsonFallbackPath" value="fixtures\mvc-secrets.json" />
    </appSettings>
 ```
-3. Run MvcExample via IIS Express or Visual Studio as normal. The library reads the secret
-   from the JSON file instead of calling AWS/LocalStack.
+3. Run via IIS Express or Visual Studio as normal. MvcExample only hosts on Windows regardless
+   of backend, since it requires IIS/IIS Express — see [CLAUDE.md](../CLAUDE.md) for details.
 
-This is a fallback for environments where Docker isn't reachable — it doesn't exercise the
-same code path as a real Secrets Manager call (no cache TTL expiry against a live backend, no
-rotation handling), so it's not a substitute for the LocalStack-backed integration coverage
-ConsoleExample and the library's test suite already provide. Treat it as "can I boot and see
-the app work," not "have I verified Secrets Manager integration."
+### Limitations
+
+This fallback doesn't exercise the same code path as a real Secrets Manager call (no cache TTL
+expiry against a live backend, no rotation handling), so it's not a substitute for the
+LocalStack-backed integration coverage the library's test suite and a Docker-enabled ConsoleExample
+run already provide. Treat it as "can I boot and see the app work," not "have I verified
+Secrets Manager integration."
 
 ## Tearing down
 
