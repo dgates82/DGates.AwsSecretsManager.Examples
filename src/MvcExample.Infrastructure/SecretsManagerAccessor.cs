@@ -14,24 +14,36 @@ namespace MvcExample.Infrastructure
     public static class SecretsManagerAccessor
     {
         private static ISecretsManagerService _instance;
+        private static string _source;
 
         public static void Initialize()
         {
+            var serviceUrl = ConfigurationManager.AppSettings["AWSServiceURL"];
+            var localJsonFallbackPath =
+                ResolveLocalJsonFallbackPath(ConfigurationManager.AppSettings["LocalJsonFallbackPath"]);
+
             var settings = new SecretsManagerSettings
             {
-                ServiceUrl = ConfigurationManager.AppSettings["AWSServiceURL"],
+                ServiceUrl = serviceUrl,
                 Region = ConfigurationManager.AppSettings["AWSRegion"],
                 AccessKey = ConfigurationManager.AppSettings["AWSAccessKey"],
                 SecretKey = ConfigurationManager.AppSettings["AWSSecretKey"],
-                LocalJsonFallbackPath = ResolveLocalJsonFallbackPath(ConfigurationManager.AppSettings["LocalJsonFallbackPath"])
+                LocalJsonFallbackPath = localJsonFallbackPath
             };
+
+            _source = !string.IsNullOrWhiteSpace(localJsonFallbackPath)
+                ? "local JSON fallback file"
+                : !string.IsNullOrWhiteSpace(serviceUrl)
+                    ? "LocalStack (via ServiceUrl override)"
+                    : "AWS Secrets Manager";
 
             _instance = SecretsManagerServiceFactory.Create(settings);
         }
 
-        public static Task<T> GetSecretAsync<T>(string secretName) where T : class
+        public static async Task<SecretFetchResult<T>> GetSecretAsync<T>(string secretName) where T : class
         {
-            return EnsureInitialized().GetSecretAsync<T>(secretName);
+            var secret = await EnsureInitialized().GetSecretAsync<T>(secretName);
+            return new SecretFetchResult<T>(secret, secretName, _source);
         }
 
         private static ISecretsManagerService EnsureInitialized()

@@ -29,6 +29,13 @@ else
         </div>
     }
 
+    if (!Model.HasResult && string.IsNullOrEmpty(Model.ErrorMessage) && !string.IsNullOrEmpty(Model.SecretName))
+    {
+        <p class="small text-muted">
+            Secret <code>@Model.SecretName</code> retrieved from @Model.Source.
+        </p>
+    }
+
     if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
         <div class="alert alert-danger">@Model.ErrorMessage</div>
@@ -47,6 +54,14 @@ else
                     Wind speed: @Model.WindSpeed mph
                 </p>
             </div>
+        </div>
+
+        <div class="alert alert-secondary small mt-3" style="max-width: 400px;">
+            <strong>How this worked</strong>
+            <hr class="my-2" />
+            Secret: <code>@Model.SecretName</code><br />
+            Retrieved URL: <code>@Model.RetrievedUrl</code><br />
+            Source: @Model.Source
         </div>
     }
 }

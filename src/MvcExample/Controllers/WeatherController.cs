@@ -17,10 +17,10 @@ namespace MvcExample.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            OpenWeatherMapSecret secret;
+            SecretFetchResult<OpenWeatherMapSecret> result;
             try
             {
-                secret = await FetchSecretAsync();
+                result = await FetchSecretAsync();
             }
             catch (FileNotFoundException ex)
             {
@@ -33,12 +33,12 @@ namespace MvcExample.Controllers
                 return View(WeatherViewModelBuilder.BackendUnavailable());
             }
 
-            if (secret == null || ApiKeyEvaluator.IsPlaceholder(secret.Key))
+            if (result.Secret == null || ApiKeyEvaluator.IsPlaceholder(result.Secret.Key))
             {
                 return View(WeatherViewModelBuilder.NotConfigured());
             }
 
-            return View(WeatherViewModelBuilder.Empty());
+            return View(WeatherViewModelBuilder.Ready(result.SecretName, result.Source));
         }
 
         [HttpPost]
@@ -49,10 +49,10 @@ namespace MvcExample.Controllers
                 return View(WeatherViewModelBuilder.MissingCityName());
             }
 
-            OpenWeatherMapSecret secret;
+            SecretFetchResult<OpenWeatherMapSecret> result;
             try
             {
-                secret = await FetchSecretAsync();
+                result = await FetchSecretAsync();
             }
             catch (FileNotFoundException ex)
             {
@@ -65,6 +65,7 @@ namespace MvcExample.Controllers
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
 
+            var secret = result.Secret;
             if (secret == null || ApiKeyEvaluator.IsPlaceholder(secret.Key))
             {
                 return View(WeatherViewModelBuilder.NotConfigured());
@@ -86,7 +87,8 @@ namespace MvcExample.Controllers
                 var weatherJson = await HttpClient.GetStringAsync(weatherUrl);
                 var weather = WeatherResponseParser.ParseWeather(weatherJson);
 
-                return View(WeatherViewModelBuilder.Success(cityName, geocode, weather));
+                return View(WeatherViewModelBuilder.Success(
+                    cityName, geocode, weather, result.SecretName, secret.Url, result.Source));
             }
             catch (Exception ex)
             {
@@ -95,7 +97,7 @@ namespace MvcExample.Controllers
             }
         }
 
-        private static Task<OpenWeatherMapSecret> FetchSecretAsync()
+        private static Task<SecretFetchResult<OpenWeatherMapSecret>> FetchSecretAsync()
         {
             var secretName = ConfigurationManager.AppSettings["Secrets:OpenWeatherMapName"];
             return SecretsManagerAccessor.GetSecretAsync<OpenWeatherMapSecret>(secretName);

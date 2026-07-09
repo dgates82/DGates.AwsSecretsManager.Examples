@@ -6,6 +6,18 @@ namespace MvcExample.Tests
     public class WeatherViewModelBuilderTests
     {
         [Fact]
+        public void Ready_PopulatesFetchInfoWithNoResultOrError()
+        {
+            var model = WeatherViewModelBuilder.Ready("dev/MvcExample/OpenWeatherMap", "AWS Secrets Manager");
+
+            Assert.Equal("dev/MvcExample/OpenWeatherMap", model.SecretName);
+            Assert.Equal("AWS Secrets Manager", model.Source);
+            Assert.False(model.HasResult);
+            Assert.True(model.IsConfigured);
+            Assert.Null(model.ErrorMessage);
+        }
+
+        [Fact]
         public void NotConfigured_SetsIsConfiguredFalseWithMessage()
         {
             var model = WeatherViewModelBuilder.NotConfigured();
@@ -77,7 +89,10 @@ namespace MvcExample.Tests
                 WindSpeed = 5.75
             };
 
-            var model = WeatherViewModelBuilder.Success("San Diego", geocode, weather);
+            var model = WeatherViewModelBuilder.Success(
+                "San Diego", geocode, weather,
+                "dev/MvcExample/OpenWeatherMap", "https://api.openweathermap.org/data/2.5/weather",
+                "AWS Secrets Manager");
 
             Assert.True(model.HasResult);
             Assert.Null(model.ErrorMessage);
@@ -88,6 +103,9 @@ namespace MvcExample.Tests
             Assert.Equal(45, model.Humidity);
             Assert.Equal(1015, model.Pressure);
             Assert.Equal(5.75, model.WindSpeed);
+            Assert.Equal("dev/MvcExample/OpenWeatherMap", model.SecretName);
+            Assert.Equal("https://api.openweathermap.org/data/2.5/weather", model.RetrievedUrl);
+            Assert.Equal("AWS Secrets Manager", model.Source);
         }
     }
 }

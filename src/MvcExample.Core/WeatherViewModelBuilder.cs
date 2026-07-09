@@ -2,9 +2,13 @@ namespace MvcExample.Core
 {
     public static class WeatherViewModelBuilder
     {
-        public static WeatherViewModel Empty()
+        public static WeatherViewModel Ready(string secretName, string source)
         {
-            return new WeatherViewModel();
+            return new WeatherViewModel
+            {
+                SecretName = secretName,
+                Source = source
+            };
         }
 
         public static WeatherViewModel NotConfigured()
@@ -67,7 +71,13 @@ namespace MvcExample.Core
             };
         }
 
-        public static WeatherViewModel Success(string cityName, GeocodeResult geocode, WeatherApiResponse weather)
+        public static WeatherViewModel Success(
+            string cityName,
+            GeocodeResult geocode,
+            WeatherApiResponse weather,
+            string secretName,
+            string retrievedUrl,
+            string source)
         {
             return new WeatherViewModel
             {
@@ -79,7 +89,10 @@ namespace MvcExample.Core
                 Description = weather.Description,
                 Humidity = weather.Humidity,
                 Pressure = weather.Pressure,
-                WindSpeed = weather.WindSpeed
+                WindSpeed = weather.WindSpeed,
+                SecretName = secretName,
+                RetrievedUrl = retrievedUrl,
+                Source = source
             };
         }
     }

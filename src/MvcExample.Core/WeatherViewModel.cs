@@ -17,5 +17,11 @@ namespace MvcExample.Core
         public int Humidity { get; set; }
         public double Pressure { get; set; }
         public double WindSpeed { get; set; }
+
+        // Populated whenever the secret was successfully fetched, so the UI can show how the
+        // library actually behaved (not shown while IsConfigured is false or a fetch failed).
+        public string SecretName { get; set; }
+        public string RetrievedUrl { get; set; }
+        public string Source { get; set; }
     }
 }
