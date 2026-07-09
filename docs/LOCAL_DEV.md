@@ -6,6 +6,7 @@
 |---|---|
 | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Runs LocalStack and seeds secrets |
 | [.NET SDK 8+](https://dotnet.microsoft.com/download) | Builds and runs example projects |
+| Visual Studio + IIS Express _(Windows only)_ | Required to actually run MvcExample — see below |
 | `aws` CLI _(optional)_ | Manually inspect or update secrets in LocalStack |
 
 > The examples target **net48** but build with any recent .NET SDK.
@@ -34,6 +35,22 @@ dotnet run --project src/ConsoleExample/ConsoleExample.csproj
 
 Or open `DGates.AwsSecretsManager.Examples.sln` in Visual Studio and run
 `ConsoleExample`.
+
+## Run MvcExample
+
+MvcExample targets classic ASP.NET MVC 5 (`System.Web.Mvc`), which requires IIS/IIS Express to
+host — it builds on any platform with the .NET SDK, but only runs on Windows. Open
+`DGates.AwsSecretsManager.Examples.sln` in Visual Studio and run `MvcExample` via IIS Express, or
+launch IIS Express directly:
+
+```
+"C:\Program Files\IIS Express\iisexpress.exe" /path:C:\path\to\src\MvcExample /port:5000
+```
+
+Once it's running, search a city name on the landing page. If the seeded secret still has the
+placeholder OpenWeatherMap key, you'll see a "configure your API key" message instead of live
+data — see [Testing with a real OpenWeatherMap key](#testing-with-a-real-openweathermap-key)
+below.
 
 ## Running examples without Docker
 

@@ -17,10 +17,13 @@ Install-Package DGates.AwsSecretsManager
 ### ConsoleExample
 Minimal wiring demo — reads a typed secret from LocalStack, demonstrates cache invalidation, force refresh, and cache hit logging.
 
-### MvcExample _(coming soon)_
-ASP.NET MVC app using `SecretsManagerServiceFactory` for DI. Retrieves an OpenWeatherMap API key from Secrets Manager and displays live weather data.
+### MvcExample
+ASP.NET MVC app using `SecretsManagerServiceFactory` for DI. Search a city to see live weather
+data from OpenWeatherMap, with the API key retrieved from AWS Secrets Manager — a "how this
+worked" panel shows the secret name, retrieved URL, and source (AWS Secrets Manager, LocalStack,
+or a local JSON fallback) for the fetch that just happened.
 
-> **Platform note:** MvcExample targets classic ASP.NET MVC 5 (`System.Web.Mvc`), which requires IIS/IIS Express to host. It builds on any platform with the .NET SDK, but only runs on Windows (Visual Studio or IIS Express). See [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md#running-mvcexample-without-docker) for a Docker-free fallback.
+> **Platform note:** MvcExample targets classic ASP.NET MVC 5 (`System.Web.Mvc`), which requires IIS/IIS Express to host. It builds on any platform with the .NET SDK, but only runs on Windows (Visual Studio or IIS Express). See [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md#running-examples-without-docker) for a Docker-free fallback.
 
 ## Local Development
 
@@ -32,9 +35,10 @@ Quick start:
 docker-compose up
 ```
 
-Then run ConsoleExample from Visual Studio or the `dotnet` CLI. _(MvcExample coming soon.)_
+Then run ConsoleExample from Visual Studio or the `dotnet` CLI, or run MvcExample via IIS
+Express/Visual Studio (Windows only — see the platform note above).
 
-No Docker available? See [Running MvcExample without Docker](docs/LOCAL_DEV.md#running-mvcexample-without-docker) for a JSON-file fallback.
+No Docker available? See [Running examples without Docker](docs/LOCAL_DEV.md#running-examples-without-docker) for a JSON-file fallback.
 
 ## Library
 
