@@ -1,13 +1,33 @@
 # Changelog
-
 All notable changes to this repository will be documented here.
-
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+---
+## [0.2.0] - 2026-07-09
+### Added
+- MvcExample (ASP.NET MVC 5, .NET Framework 4.8) — demo app retrieving an OpenWeatherMap API
+  key from Secrets Manager via `SecretsManagerServiceFactory`, geocoding and fetching live
+  weather for a user-entered city
+- MvcExample.Core — pure logic layer (view-model construction, response parsing),
+  multi-targeted net48/net8.0, tested via MvcExample.Tests (xUnit)
+- MvcExample.Infrastructure — isolates the AWS SDK dependency chain via ProjectReference,
+  resolving the full transitive closure correctly in the legacy web project
+- Local JSON fallback support (`LocalJsonFallbackPath`) for both ConsoleExample and MvcExample,
+  documented in docs/LOCAL_DEV.md, for environments without Docker
+- "How this worked" panel on the weather demo page — shows secret name, retrieved URL, and
+  backend source (AWS/LocalStack vs. JSON fallback)
+- Graceful handling of unconfigured/placeholder API keys and Secrets Manager connection
+  failures (previously crashed the app at startup)
+
+### Changed
+- MvcExample's UI/MVC package references migrated from packages.config to PackageReference,
+  fixing clean-checkout build failures on Linux
+- Upgraded Bootstrap to 5.x, jQuery to 3.7.1, Newtonsoft.Json, and other vulnerable
+  dependencies
+- Renamed OpenWeatherMap secret from `dev/DGates.AwsSecretsManager.Examples/OpenWeatherMap` to
+  `dev/MvcExample/OpenWeatherMap`, matching ConsoleExample's per-project naming convention
 
 ---
-
 ## [0.1.0] - 2025-07-05
-
 ### Added
 - ConsoleExample (.NET Framework 4.8) — demonstrates typed secret retrieval,
   raw string retrieval, cache invalidation, force refresh, and cache hit logging

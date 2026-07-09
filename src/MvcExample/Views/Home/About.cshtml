@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>About This Example</h1>
+        <p class="lead">
+            A minimal ASP.NET MVC 5 app demonstrating
+            <a href="https://github.com/dgates82/DGates.AwsSecretsManager">DGates.AwsSecretsManager</a>,
+            a typed, cached AWS Secrets Manager wrapper for .NET Framework 4.8 applications.
+        </p>
+
+        <p>
+            This app wires up <code>SecretsManagerServiceFactory</code> at startup, retrieves an
+            OpenWeatherMap API key from AWS Secrets Manager, and uses it to fetch live weather data.
+            It's meant to show the library working inside a real hosted MVC5 app — DI wiring,
+            caching, and config, not just a console script.
+        </p>
+
+        <p>
+            For setup, configuration, and full API details, see the
+            <a href="https://github.com/dgates82/DGates.AwsSecretsManager">library README</a>.
+            Questions or issues? Open one on
+            <a href="https://github.com/dgates82/DGates.AwsSecretsManager.Examples/issues">GitHub</a>.
+        </p>
+
+        <a href="@Url.Action("Index", "Weather")" class="btn btn-primary">Try the Weather Demo</a>
+    </div>
+</div>

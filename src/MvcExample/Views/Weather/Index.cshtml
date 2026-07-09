@@ -1,0 +1,72 @@
+﻿@model MvcExample.Core.WeatherViewModel
+@using MvcExample.Core
+@{
+    ViewBag.Title = "Weather";
+}
+
+<div class="mx-auto" style="max-width: 600px;">
+
+    <div class="p-4 mb-4 bg-light rounded-3">
+        <h1 class="display-6">Weather Demo</h1>
+        <p class="lead mb-0">
+            Live weather data retrieved through <code>DGates.AwsSecretsManager</code>, using an
+            OpenWeatherMap API key stored in AWS Secrets Manager.
+        </p>
+    </div>
+
+    @if (!Model.IsConfigured)
+    {
+        <div class="alert alert-warning">@Model.ConfigurationMessage</div>
+    }
+    else
+    {
+        using (Html.BeginForm("Index", "Weather", FormMethod.Post))
+        {
+            <div class="input-group input-group-lg mb-4">
+                <input type="text" name="cityName" class="form-control" placeholder="Enter a city name"
+                       value="@Model.CityName" required="required" />
+                <button class="btn btn-primary" type="submit">Get Weather</button>
+            </div>
+        }
+
+        if (!Model.HasResult && string.IsNullOrEmpty(Model.ErrorMessage) && !string.IsNullOrEmpty(Model.SecretName))
+        {
+            <p class="small text-muted mb-4">
+                Secret <code>@Model.SecretName</code> retrieved from @Model.Source.
+            </p>
+        }
+
+        if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger mb-4">@Model.ErrorMessage</div>
+        }
+
+        if (Model.HasResult)
+        {
+            <div class="card border-primary mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title">@Model.Location</h5>
+                    <h6 class="card-subtitle mb-3 text-muted">
+                        @WeatherEmojiMapper.GetEmoji(Model.Description) @Model.Description
+                    </h6>
+                    <p class="display-4 mb-1">@Model.Temperature&deg;F</p>
+                    <p class="text-muted mb-3">Feels like @Model.FeelsLike&deg;F</p>
+                    <p class="card-text mb-0">
+                        Humidity: @Model.Humidity%<br />
+                        Pressure: @Model.Pressure hPa<br />
+                        Wind speed: @Model.WindSpeed mph
+                    </p>
+                </div>
+            </div>
+
+            <div class="alert alert-secondary small">
+                <strong>How this worked</strong>
+                <hr class="my-2" />
+                Secret: <code>@Model.SecretName</code><br />
+                Retrieved URL: <code>@Model.RetrievedUrl</code><br />
+                Source: @Model.Source
+            </div>
+        }
+    }
+
+</div>
