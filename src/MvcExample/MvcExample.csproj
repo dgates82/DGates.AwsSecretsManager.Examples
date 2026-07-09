@@ -206,6 +206,11 @@
         <Folder Include="Models"/>
     </ItemGroup>
     <ItemGroup>
+        <None Include="fixtures\mvc-secrets.json" Condition="Exists('fixtures\mvc-secrets.json')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
         <None Include="packages.config"/>
     </ItemGroup>
     <PropertyGroup>

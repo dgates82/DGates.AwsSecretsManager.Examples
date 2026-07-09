@@ -13,7 +13,8 @@ namespace ConsoleExample
             var settings = new SecretsManagerSettings
             {
                 ServiceUrl = ConfigurationManager.AppSettings["AWSServiceURL"],
-                Region     = ConfigurationManager.AppSettings["AWSRegion"],
+                Region = ConfigurationManager.AppSettings["AWSRegion"],
+                LocalJsonFallbackPath = ConfigurationManager.AppSettings["LocalJsonFallbackPath"]
             };
 
             var secretName = ConfigurationManager.AppSettings["Secrets:DbConfigName"];

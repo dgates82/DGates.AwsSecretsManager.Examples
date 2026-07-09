@@ -44,9 +44,9 @@ another hypervisor without virtualization passthrough (Docker Desktop's Linux-co
 needs that passthrough, which many nested-VM setups don't expose), or any machine without
 Docker installed at all.
 
-### ConsoleExample
+#### ConsoleExample
 
-1. Create a fixture JSON file, e.g. `fixtures/console-secrets.json`:
+1. Create a fixture JSON file at `src/ConsoleExample/fixtures/console-secrets.json`:
 ```json
    {
      "dev/ConsoleExample/DbConfig": {
@@ -57,8 +57,18 @@ Docker installed at all.
      }
    }
 ```
-2. Set `LocalJsonFallbackPath` in `SecretsManagerSettings` (or wherever ConsoleExample reads
-   its config from) to point at that file.
+This file is copied to the build output directory automatically (see
+`ConsoleExample.csproj`), so the relative path below resolves correctly whether you run
+via `dotnet run` or the built exe.
+2. Add `LocalJsonFallbackPath` to `App.config`'s `appSettings`:
+```xml
+   <add key="LocalJsonFallbackPath" value="fixtures\console-secrets.json" />
+```
+3. Run as normal:
+```bash
+   dotnet run --project src/ConsoleExample/ConsoleExample.csproj
+```
+
 3. Run as normal:
 ```bash
    dotnet run --project src/ConsoleExample/ConsoleExample.csproj
@@ -75,6 +85,10 @@ Docker installed at all.
      }
    }
 ```
+
+The project is already configured to copy this file to the build output on rebuild, so
+the relative path below will resolve once you build.
+
 2. Point `Web.config` at it:
 ```xml
    <appSettings>
