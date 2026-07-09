@@ -76,6 +76,10 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\MvcExample.Core\MvcExample.Core.csproj" />
+        <ProjectReference Include="..\MvcExample.Infrastructure\MvcExample.Infrastructure.csproj" />
+    </ItemGroup>
+    <ItemGroup>
         <!-- PackageReference doesn't auto-populate compile references in this legacy (non-SDK)
              project the way it does in SDK-style projects, so wire the resolved package paths
              (via GeneratePathProperty above) up as explicit References, same as the old
@@ -236,6 +240,16 @@
     <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != '' AND Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')"/>
     <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
         <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)"/>
+    </Target>
+    <!-- Legacy (non-SDK) projects only partially copy an SDK-style ProjectReference's own
+         transitive package dependencies to the output folder (e.g. AWSSDK.SecurityToken.dll
+         goes missing). Force a full copy of MvcExample.Infrastructure's output as a safety net
+         so nothing is missing at runtime. -->
+    <Target Name="CopyInfrastructureTransitiveDependencies" AfterTargets="Build">
+        <ItemGroup>
+            <InfrastructureOutputFiles Include="..\MvcExample.Infrastructure\bin\$(Configuration)\net48\*.dll"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(InfrastructureOutputFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true"/>
     </Target>
     <ProjectExtensions>
         <VisualStudio>

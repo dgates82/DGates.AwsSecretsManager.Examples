@@ -69,11 +69,6 @@ via `dotnet run` or the built exe.
    dotnet run --project src/ConsoleExample/ConsoleExample.csproj
 ```
 
-3. Run as normal:
-```bash
-   dotnet run --project src/ConsoleExample/ConsoleExample.csproj
-```
-
 ### MvcExample
 
 1. Create a fixture JSON file, e.g. `fixtures/mvc-secrets.json`:
@@ -86,8 +81,13 @@ via `dotnet run` or the built exe.
    }
 ```
 
-The project is already configured to copy this file to the build output on rebuild, so
-the relative path below will resolve once you build.
+Unlike ConsoleExample, IIS/IIS Express serves a classic ASP.NET app from its project's physical
+root (where `Web.config` lives), not from a `bin\` output folder — so the relative path should
+resolve directly against the fixture file's source location, with no copy-to-output step needed.
+`MvcExample.csproj` still copies the file to `bin\` defensively (`Condition="Exists(...)"`, so it's
+a no-op until the file exists), in case that assumption is wrong. **This hasn't been verified
+against a real IIS Express run yet** — confirm on Windows which path actually resolves, and correct
+this section if the assumption above turns out to be wrong.
 
 2. Point `Web.config` at it:
 ```xml

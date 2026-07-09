@@ -1,4 +1,5 @@
-﻿@{
+﻿@model MvcExample.Core.WeatherViewModel
+@{
     ViewBag.Title = "Weather";
 }
 
@@ -19,8 +20,39 @@
     API key from Secrets Manager via <code>SecretsManagerServiceFactory</code> and uses it below.
 </p>
 
-<p>
-    Stub page — wiring to <code>ISecretsManagerService</code> and the OpenWeatherMap API comes
-    next. See the <a href="@Url.Action("About", "Home")">About</a> page for background on this
-    example.
-</p>
+@if (!Model.IsConfigured)
+{
+    <div class="alert alert-warning">@Model.ConfigurationMessage</div>
+}
+else
+{
+    using (Html.BeginForm("Index", "Weather", FormMethod.Post))
+    {
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <input type="text" name="cityName" class="form-control" placeholder="Enter a city name"
+                   value="@Model.CityName" required="required" />
+            <button class="btn btn-primary" type="submit">Get Weather</button>
+        </div>
+    }
+
+    if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    if (Model.HasResult)
+    {
+        <div class="card" style="max-width: 400px;">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Location</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.Description</h6>
+                <p class="card-text">
+                    Temperature: @Model.Temperature&deg;F (feels like @Model.FeelsLike&deg;F)<br />
+                    Humidity: @Model.Humidity%<br />
+                    Pressure: @Model.Pressure hPa<br />
+                    Wind speed: @Model.WindSpeed mph
+                </p>
+            </div>
+        </div>
+    }
+}
