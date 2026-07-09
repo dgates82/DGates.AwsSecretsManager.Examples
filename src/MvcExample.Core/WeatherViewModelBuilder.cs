@@ -17,6 +17,17 @@ namespace MvcExample.Core
             };
         }
 
+        public static WeatherViewModel BackendUnavailable()
+        {
+            return new WeatherViewModel
+            {
+                IsConfigured = false,
+                ConfigurationMessage =
+                    "Couldn't reach the secrets backend. Make sure LocalStack is running (docker compose up), " +
+                    "or set LocalJsonFallbackPath in Web.config to use a local fixture file instead."
+            };
+        }
+
         public static WeatherViewModel MissingCityName()
         {
             return new WeatherViewModel

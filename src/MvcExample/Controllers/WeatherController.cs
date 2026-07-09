@@ -14,8 +14,24 @@ namespace MvcExample.Controllers
         private static readonly HttpClient HttpClient = new HttpClient();
 
         [HttpGet]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            OpenWeatherMapSecret secret;
+            try
+            {
+                secret = await FetchSecretAsync();
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Failed to retrieve OpenWeatherMap secret on page load: " + ex);
+                return View(WeatherViewModelBuilder.BackendUnavailable());
+            }
+
+            if (secret == null || ApiKeyEvaluator.IsPlaceholder(secret.Key))
+            {
+                return View(WeatherViewModelBuilder.NotConfigured());
+            }
+
             return View(WeatherViewModelBuilder.Empty());
         }
 
@@ -27,16 +43,14 @@ namespace MvcExample.Controllers
                 return View(WeatherViewModelBuilder.MissingCityName());
             }
 
-            var secretName = ConfigurationManager.AppSettings["Secrets:OpenWeatherMapName"];
-
             OpenWeatherMapSecret secret;
             try
             {
-                secret = await SecretsManagerAccessor.GetSecretAsync<OpenWeatherMapSecret>(secretName);
+                secret = await FetchSecretAsync();
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve OpenWeatherMap secret '" + secretName + "': " + ex);
+                Trace.TraceError("Failed to retrieve OpenWeatherMap secret: " + ex);
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
 
@@ -68,6 +82,12 @@ namespace MvcExample.Controllers
                 Trace.TraceError("Failed to retrieve weather data for '" + cityName + "': " + ex);
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
+        }
+
+        private static Task<OpenWeatherMapSecret> FetchSecretAsync()
+        {
+            var secretName = ConfigurationManager.AppSettings["Secrets:OpenWeatherMapName"];
+            return SecretsManagerAccessor.GetSecretAsync<OpenWeatherMapSecret>(secretName);
         }
     }
 }
