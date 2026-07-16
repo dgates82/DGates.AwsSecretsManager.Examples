@@ -2,6 +2,29 @@
 All notable changes to this repository will be documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
+## [Unreleased]
+### Added
+- Logging demonstration in both example apps, showing `DGates.AwsSecretsManager`'s `ILogger`
+  integration works with arbitrary logging frameworks:
+  - ConsoleExample — custom synchronous `ILoggerProvider`/`ILogger` (`Logging/SyncConsoleLoggerProvider.cs`),
+    writing directly to `Console.Out` to keep log output correctly interleaved with the demo's
+    step-by-step narration (`Microsoft.Extensions.Logging.Console`'s async queue caused
+    out-of-order output when mixed with synchronous console writes)
+  - MvcExample — NLog, bridged into the library via `NLogLoggerProvider` in
+    `SecretsManagerAccessor.Initialize()`, with `WeatherController` and `Global.asax.cs` also
+    converted to NLog directly (`LogManager.GetCurrentClassLogger()`), replacing
+    `System.Diagnostics.Trace` — one unified logging pipeline for both app and library output
+  - MvcExample logs to `App_Data/logs/mvcexample.log` and the VS debugger output via
+    `nlog.config`, `minlevel="Debug"` by default
+
+### Changed
+- ConsoleExample's demo sequence restructured to insert a fetch between `InvalidateCache` and
+  `RefreshSecretAsync`, so each step's log output proves its narration (invalidate actually
+  clearing the cache, refresh bypassing a warm cache) rather than asserting it
+- Removed ConsoleExample's hardcoded `"[cache hit]"` console message, now redundant with the
+  library's real `Debug`-level cache-hit log
+- `DGates.AwsSecretsManager` dependency bumped to `1.0.0-beta.3`
+---
 ## [0.2.0] - 2026-07-09
 ### Added
 - MvcExample (ASP.NET MVC 5, .NET Framework 4.8) — demo app retrieving an OpenWeatherMap API
