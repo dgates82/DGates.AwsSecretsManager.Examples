@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using DGates.AwsSecretsManager;
+using NLog.Extensions.Logging;
 
 namespace MvcExample.Infrastructure
 {
@@ -37,7 +38,10 @@ namespace MvcExample.Infrastructure
                     ? "LocalStack (via ServiceUrl override)"
                     : "AWS Secrets Manager";
 
-            _instance = SecretsManagerServiceFactory.Create(settings);
+            var loggerProvider = new NLogLoggerProvider();
+            var logger = loggerProvider.CreateLogger(nameof(SecretsManagerService));
+            
+            _instance = SecretsManagerServiceFactory.Create(settings, logger);
         }
 
         public static async Task<SecretFetchResult<T>> GetSecretAsync<T>(string secretName) where T : class

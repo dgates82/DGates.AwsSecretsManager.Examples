@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using MvcExample.Core;
 using MvcExample.Infrastructure;
+using NLog;
 
 namespace MvcExample.Controllers
 {
     public class WeatherController : Controller
     {
         private static readonly HttpClient HttpClient = new HttpClient();
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -44,6 +47,8 @@ namespace MvcExample.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(string cityName)
         {
+            Log.Info("Received request for weather data for city: {CityName}", cityName);
+            
             if (string.IsNullOrWhiteSpace(cityName))
             {
                 return View(WeatherViewModelBuilder.MissingCityName());
