@@ -1,6 +1,5 @@
 using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,12 +26,12 @@ namespace MvcExample.Controllers
             }
             catch (FileNotFoundException ex)
             {
-                Trace.TraceError("LocalJsonFallbackPath file not found on page load: " + ex);
+                Log.Error(ex, "LocalJsonFallbackPath file not found on page load");
                 return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve OpenWeatherMap secret on page load: " + ex);
+                Log.Error(ex, "Failed to retrieve OpenWeatherMap secret on page load");
                 return View(WeatherViewModelBuilder.BackendUnavailable());
             }
 
@@ -61,12 +60,12 @@ namespace MvcExample.Controllers
             }
             catch (FileNotFoundException ex)
             {
-                Trace.TraceError("LocalJsonFallbackPath file not found: " + ex);
+                Log.Error(ex, "LocalJsonFallbackPath file not found");
                 return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve OpenWeatherMap secret: " + ex);
+                Log.Error(ex, "Failed to retrieve OpenWeatherMap secret");
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
 
@@ -97,7 +96,7 @@ namespace MvcExample.Controllers
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve weather data for '" + cityName + "': " + ex);
+                Log.Error(ex, "Failed to retrieve weather data for '{CityName}'", cityName);
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
         }
