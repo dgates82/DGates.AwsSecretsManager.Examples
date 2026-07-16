@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DGates.AwsSecretsManager" Version="0.1.0-beta.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
@@ -23,6 +19,11 @@
     <None Update="fixtures\console-secrets.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DGates.AwsSecretsManager" Version="1.0.0-beta.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
   </ItemGroup>
 
 </Project>

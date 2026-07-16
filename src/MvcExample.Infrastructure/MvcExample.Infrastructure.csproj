@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DGates.AwsSecretsManager" Version="0.1.0-beta.1" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web" />
+    <PackageReference Include="DGates.AwsSecretsManager" Version="1.0.0-beta.1" />
   </ItemGroup>
 
 </Project>
