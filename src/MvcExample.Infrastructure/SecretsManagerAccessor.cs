@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using DGates.AwsSecretsManager;
+using NLog.Extensions.Logging;
 
 namespace MvcExample.Infrastructure
 {
@@ -15,6 +16,8 @@ namespace MvcExample.Infrastructure
     {
         private static ISecretsManagerService _instance;
         private static string _source;
+        
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         public static void Initialize()
         {
@@ -36,8 +39,17 @@ namespace MvcExample.Infrastructure
                 : !string.IsNullOrWhiteSpace(serviceUrl)
                     ? "LocalStack (via ServiceUrl override)"
                     : "AWS Secrets Manager";
+            
+            Log.Info("SecretsManagerAccessor initializing, backend source: {Source}", _source);
+            if (!string.IsNullOrWhiteSpace(localJsonFallbackPath))
+            {
+                Log.Info("Resolved LocalJsonFallbackPath: {ResolvedPath}", localJsonFallbackPath);
+            }
 
-            _instance = SecretsManagerServiceFactory.Create(settings);
+            var loggerProvider = new NLogLoggerProvider();
+            var logger = loggerProvider.CreateLogger(nameof(SecretsManagerService));
+            
+            _instance = SecretsManagerServiceFactory.Create(settings, logger);
         }
 
         public static async Task<SecretFetchResult<T>> GetSecretAsync<T>(string secretName) where T : class

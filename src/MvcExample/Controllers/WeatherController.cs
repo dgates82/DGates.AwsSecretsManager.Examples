@@ -1,18 +1,20 @@
 using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using MvcExample.Core;
 using MvcExample.Infrastructure;
+using NLog;
 
 namespace MvcExample.Controllers
 {
     public class WeatherController : Controller
     {
         private static readonly HttpClient HttpClient = new HttpClient();
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -24,12 +26,12 @@ namespace MvcExample.Controllers
             }
             catch (FileNotFoundException ex)
             {
-                Trace.TraceError("LocalJsonFallbackPath file not found on page load: " + ex);
+                Log.Error(ex, "LocalJsonFallbackPath file not found on page load");
                 return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve OpenWeatherMap secret on page load: " + ex);
+                Log.Error(ex, "Failed to retrieve OpenWeatherMap secret on page load");
                 return View(WeatherViewModelBuilder.BackendUnavailable());
             }
 
@@ -44,6 +46,8 @@ namespace MvcExample.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(string cityName)
         {
+            Log.Info("Received request for weather data for city: {CityName}", cityName);
+            
             if (string.IsNullOrWhiteSpace(cityName))
             {
                 return View(WeatherViewModelBuilder.MissingCityName());
@@ -56,12 +60,12 @@ namespace MvcExample.Controllers
             }
             catch (FileNotFoundException ex)
             {
-                Trace.TraceError("LocalJsonFallbackPath file not found: " + ex);
+                Log.Error(ex, "LocalJsonFallbackPath file not found");
                 return View(WeatherViewModelBuilder.LocalFallbackFileNotFound());
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve OpenWeatherMap secret: " + ex);
+                Log.Error(ex, "Failed to retrieve OpenWeatherMap secret");
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
 
@@ -92,7 +96,7 @@ namespace MvcExample.Controllers
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Failed to retrieve weather data for '" + cityName + "': " + ex);
+                Log.Error(ex, "Failed to retrieve weather data for '{CityName}'", cityName);
                 return View(WeatherViewModelBuilder.Error(cityName));
             }
         }
