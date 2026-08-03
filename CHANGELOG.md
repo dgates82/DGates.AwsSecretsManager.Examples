@@ -2,7 +2,7 @@
 All notable changes to this repository will be documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
-## [Unreleased]
+## [1.0.0] - 2026-07-24
 ### Added
 - Logging demonstration in both example apps, showing `DGates.AwsSecretsManager`'s `ILogger`
   integration works with arbitrary logging frameworks:
