@@ -6,11 +6,15 @@ Example applications demonstrating integration of the [DGates.AwsSecretsManager]
 
 ## NuGet
 
+```sh
+dotnet add package DGates.AwsSecretsManager
+```
+
 ```
 Install-Package DGates.AwsSecretsManager
 ```
 
-> Package page: https://www.nuget.org/packages/DGates.AwsSecretsManager _(coming soon — pending NuGet publication)_
+> Package page: https://www.nuget.org/packages/DGates.AwsSecretsManager
 
 ## Examples
 
