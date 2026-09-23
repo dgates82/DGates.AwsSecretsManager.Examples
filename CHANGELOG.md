@@ -2,6 +2,10 @@
 All notable changes to this repository will be documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
+## [1.1.1] - 2026-09-23
+### Changed
+- `DGates.AwsSecretsManager` dependency bumped to `1.1.1` in both example apps.
+---
 ## [1.0.0] - 2026-07-24
 ### Added
 - Logging demonstration in both example apps, showing `DGates.AwsSecretsManager`'s `ILogger`
